@@ -44,6 +44,7 @@
      //draw mountains
      [self drawMountainsinRect:rect inContext:context withColorSpace:colorSpace];
      //draw grass
+     [self drawGrassInRect:rect inContext:context withColorSpace:colorSpace];
      //draw flowers
      
      CGColorSpaceRelease(colorSpace);
@@ -62,6 +63,9 @@
     NSArray *colors = @[(__bridge id)baseColor.CGColor, (__bridge id)middleStop.CGColor, (__bridge id)farStop.CGColor];
     
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+    
+//    CGPoint startPoint = CGPointMake(0, rect.size.height * 0.5);
+//    CGPoint endPoint = CGPointMake(rect.size.width, rect.size.height * 0.5);
     
     CGPoint startPoint = CGPointMake(rect.size.height * 0.5, 0);
     CGPoint endPoint = CGPointMake(rect.size.height * 0.5, rect.size.width);
@@ -130,37 +134,37 @@
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextStrokePath(context);
     
-    
-//    //add points
-//    CGFloat width = 4;
-//    CGContextAddRect(context, CGRectMake(-5, 157, width, width));
-//    CGContextAddRect(context, CGRectMake(77, 157, width, width));
-//    CGContextAddRect(context, CGRectMake(303, 125, width, width));
-//    CGContextAddRect(context, CGRectMake(350, 150, width, width));
-//    CGContextAddRect(context, CGRectMake(410, 145, width, width));
-//    
-//    //add control points
-//    CGContextAddRect(context, CGRectMake(30, 129, width, width));
-//    CGContextAddRect(context, CGRectMake(190, 210, width, width));
-//    CGContextAddRect(context, CGRectMake(200, 70, width, width));
-//    CGContextAddRect(context, CGRectMake(340, 150, width, width));
-//    CGContextAddRect(context, CGRectMake(380, 155, width, width));
-//    CGContextAddRect(context, CGRectMake(500, 100, width, width));
-//    CGContextAddRect(context, CGRectMake(540, 190, width, width));
-//    
-//    CGContextClip(context);
-//    
-//    CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
-//    CGContextFillRect(context, rect);
-    //add control points
-    //add quad control points
-    
     //release path
     CGPathRelease(foregroundMountains);
     CGPathRelease(backgroundMountains);
     
     CGContextRestoreGState(context);
     CGGradientRelease(backgroundGradient);
+}
+
+- (void)drawGrassInRect:(CGRect)rect inContext:(CGContextRef)context withColorSpace:(CGColorSpaceRef)colorSpace
+{
+    CGMutablePathRef grassPath = CGPathCreateMutable();
+    CGPathMoveToPoint(grassPath, nil, 0, 225);
+    CGPathAddCurveToPoint(grassPath, nil, 140, 215, 300, 260, 590, 230);
+    CGPathAddLineToPoint(grassPath, nil, 590, 320);
+    CGPathAddLineToPoint(grassPath, nil, 0, 320);
+    CGPathCloseSubpath(grassPath);
+    
+    
+    UIColor *darkColor = [UIColor colorWithRed:0.0/255.0 green:134.0/255.0 blue:61.0/255.0 alpha:1.0];
+    UIColor *lightColor = [UIColor colorWithRed:39.0/255.0 green:171.0/255.0 blue:95.0/255.0 alpha:1.0];
+    
+    CGFloat locations[] = {0.2, 0.6};
+    NSArray *colors = @[(__bridge id)lightColor.CGColor, (__bridge id)darkColor.CGColor];
+    CGPoint startPoint = CGPointMake(0, 225);
+    CGPoint endPoint = CGPointMake(0, 320);
+    
+    CGGradientRef grassGradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+    
+    CGContextAddPath(context, grassPath);
+    CGContextClip(context);
+    CGContextDrawLinearGradient(context, grassGradient, startPoint, endPoint, 0);
 }
 
 @end
